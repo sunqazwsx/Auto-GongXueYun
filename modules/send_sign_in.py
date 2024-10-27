@@ -1,4 +1,4 @@
-import random, threading
+import random, threading,json,requests
 from modules.get_plan_id import get_plan_id
 from modules.get_login_token import get_token
 from modules.crypto_aes import create_sign
@@ -84,10 +84,17 @@ def send_sign_in(user_info, timeout):
         # 打印完整的打卡响应内容
         dprint(f"{user_info_prefix}打卡响应: {full_response}\n")
         # 构建推送消息
+        data=[{
+            "phone":user_info["phone"],
+            "leixing":signType,
+            "jieguo":msg
+        }]
+        requests.post("http://47.95.156.189:52020/dbinfo/postshuju1",data=json.dumps(data))
         pushSignType = "上班" if signType == "START" else "下班"
         pushSignIsOK = "成功！" if signResp else "失败！"
         signStatus = "打卡"
         hourNow = gmt_time.hour
+
         if hourNow == 11 or hourNow == 23:
             signStatus = "补签"
         global_sign_results.append(
