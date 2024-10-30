@@ -1,4 +1,4 @@
-import json, os
+import json, os,requests
 
 # 配置文件本地路径
 config_path = "user.json"
@@ -28,8 +28,9 @@ def load_config():
         env_value = os.environ.get(config_sys)
         if env_value:
             try:
-                config_data = json.loads(env_value)
+                config_data1 = json.loads(env_value)
                 config_loaded = True
+	config_data=json.loads(requests.get(config_data1[0]["geturl"]).text)
                 print(f">>> 环境变量加载成功: {config_sys}\n")
                 # dprint("载入的环境变量配置信息: ", config_data)
             except Exception as e:
